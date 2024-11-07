@@ -13,6 +13,7 @@ struct TimerBoxView: View {
     @State private var selectedMinutes = 0
     @State private var selectedSeconds = 0
     @State private var timerActive = false
+    @State private var isLocked = false
     
     let minutesRange = Array(0...59)
     let secondsRange = Array(0...59)
@@ -21,6 +22,7 @@ struct TimerBoxView: View {
     @MainActor
     func startTimer() {
         remainingTime = TimeInterval(selectedMinutes * 60 + selectedSeconds)
+        isLocked = true
         
         if remainingTime > 0 {
             timerActive = true
@@ -47,6 +49,11 @@ struct TimerBoxView: View {
         timer = nil
     }
     
+    func unlockBox() {
+        isLocked = false
+        unlock()
+    }
+    
     // 残り時間のフォーマットを変更
     func formatTime(_ time: TimeInterval) -> String {
         let minutes = Int(time) / 60
@@ -61,7 +68,17 @@ struct TimerBoxView: View {
                 .padding()
                 .font(.title)
             VStack {
-                if !timerActive {
+                if timerActive {
+                    Image(systemName: "lock")
+                        .font(.system(size: 72, weight: .semibold))
+                        .padding()
+                    Text(formatTime(remainingTime))
+                        .font(.system(size: 72, weight: .semibold))
+                        .padding(3)
+                        .contentTransition(.numericText())
+                    Text("時間までロックします")
+                        .font(.system(size: 16, weight: .semibold))
+                } else if !isLocked {
                     HStack {
                         Picker(selection: $selectedMinutes, label: Text("分")) {
                             ForEach(minutesRange, id: \.self) { minute in
@@ -86,14 +103,14 @@ struct TimerBoxView: View {
                     }
                     .padding()
                 } else {
-                    Image(systemName: "lock")
+                    Image(systemName: "lock.open")
                         .font(.system(size: 72, weight: .semibold))
                         .padding()
-                    Text(formatTime(remainingTime))
-                        .font(.system(size: 72, weight: .semibold))
-                        .padding(3)
-                        .contentTransition(.numericText())
-                    Text("時間までロックします")
+                    Button("解錠") {
+                        unlockBox()
+                    }
+                    .padding()
+                    Text("ロックが解除されました")
                         .font(.system(size: 16, weight: .semibold))
                 }
             }
