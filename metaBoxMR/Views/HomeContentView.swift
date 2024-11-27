@@ -50,21 +50,21 @@ struct HomeContentView: View {
                                     }
                                 }
                                 
-                                if !appState.objectTrackingStartedRunning {
-                                    HStack {
-                                        ProgressView()
-                                        Text("Please wait until all reference objects have been loaded")
-                                    }
-                                }
+//                                if !appState.objectTrackingStartedRunning {
+//                                    HStack {
+//                                        ProgressView()
+//                                        Text("Please wait until all reference objects have been loaded")
+//                                    }
+//                                }
                             }
                             
-                            Text(appState.isImmersiveSpaceOpened ?
-                                 "This leaves the immersive space." :
-                                 "This enters an immersive space, hiding all other apps."
-                            )
-                            .foregroundStyle(.secondary)
-                            .font(.footnote)
-                            .padding(.horizontal)
+//                            Text(appState.isImmersiveSpaceOpened ?
+//                                 "This leaves the immersive space." :
+//                                 "This enters an immersive space, hiding all other apps."
+//                            )
+//                            .foregroundStyle(.secondary)
+//                            .font(.footnote)
+//                            .padding(.horizontal)
                         }
                     }
                 }
@@ -113,7 +113,7 @@ struct HomeContentView: View {
                     await appState.monitorSessionEvents()
                 }
             }.tabItem {
-                Label("Tracking", systemImage: "plus.viewfinder")
+                Label("トラッキング", systemImage: "plus.viewfinder")
             }.tag(0)
             
             VStack {
@@ -129,7 +129,7 @@ struct HomeContentView: View {
                 }
 
             }.tabItem {
-                Label("Apps", systemImage: "gear")
+                Label("アプリ設定", systemImage: "gear")
             }.tag(1)
         }
     }

@@ -17,9 +17,10 @@
 		0F912B712C3A30AB00D44DEF /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0F912B702C3A30AB00D44DEF /* Preview Assets.xcassets */; };
 		0F912B7C2C3A30AB00D44DEF /* VisionOSObjectTrackingDemoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F912B7B2C3A30AB00D44DEF /* VisionOSObjectTrackingDemoTests.swift */; };
 		D155A43B2CC26B8900F760AB /* ObjectAnchorVisualization.swift in Sources */ = {isa = PBXBuildFile; fileRef = D155A43A2CC26B8900F760AB /* ObjectAnchorVisualization.swift */; };
-		D155A4732CC3DAD400F760AB /* metaBox2.referenceobject in Sources */ = {isa = PBXBuildFile; fileRef = D155A4722CC3DAD400F760AB /* metaBox2.referenceobject */; };
+		D1628D142CF6E9A500BA9227 /* metaBox.referenceobject in Sources */ = {isa = PBXBuildFile; fileRef = D1628D132CF6E9A500BA9227 /* metaBox.referenceobject */; };
 		D178A9732CCF2156007AD290 /* Unlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = D178A9722CCF2156007AD290 /* Unlock.swift */; };
 		D178A9752CCF55DF007AD290 /* AppSelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = D178A9742CCF55D6007AD290 /* AppSelection.swift */; };
+		D1EBA9822CEB187B008E0A11 /* metaBoxSkin1.usdz in Resources */ = {isa = PBXBuildFile; fileRef = D1EBA9812CEB187B008E0A11 /* metaBoxSkin1.usdz */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -46,9 +47,10 @@
 		0F912B772C3A30AB00D44DEF /* metaBoxMRTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = metaBoxMRTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		0F912B7B2C3A30AB00D44DEF /* VisionOSObjectTrackingDemoTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisionOSObjectTrackingDemoTests.swift; sourceTree = "<group>"; };
 		D155A43A2CC26B8900F760AB /* ObjectAnchorVisualization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectAnchorVisualization.swift; sourceTree = "<group>"; };
-		D155A4722CC3DAD400F760AB /* metaBox2.referenceobject */ = {isa = PBXFileReference; lastKnownFileType = file.referenceobject; path = metaBox2.referenceobject; sourceTree = "<group>"; };
+		D1628D132CF6E9A500BA9227 /* metaBox.referenceobject */ = {isa = PBXFileReference; lastKnownFileType = file.referenceobject; path = metaBox.referenceobject; sourceTree = "<group>"; };
 		D178A9722CCF2156007AD290 /* Unlock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Unlock.swift; sourceTree = "<group>"; };
 		D178A9742CCF55D6007AD290 /* AppSelection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSelection.swift; sourceTree = "<group>"; };
+		D1EBA9812CEB187B008E0A11 /* metaBoxSkin1.usdz */ = {isa = PBXFileReference; lastKnownFileType = file; path = metaBoxSkin1.usdz; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -89,6 +91,7 @@
 		0F04F7D52C3A479B00A2F072 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				D1EBA9812CEB187B008E0A11 /* metaBoxSkin1.usdz */,
 				0F912B652C3A30A900D44DEF /* HomeContentView.swift */,
 				0F04F7D62C3A47A900A2F072 /* ObjectTrackingRealityView.swift */,
 			);
@@ -98,7 +101,7 @@
 		0F2B5E442C3A552A00BB982D /* Reference Objects */ = {
 			isa = PBXGroup;
 			children = (
-				D155A4722CC3DAD400F760AB /* metaBox2.referenceobject */,
+				D1628D132CF6E9A500BA9227 /* metaBox.referenceobject */,
 			);
 			path = "Reference Objects";
 			sourceTree = "<group>";
@@ -250,6 +253,7 @@
 			files = (
 				0F912B712C3A30AB00D44DEF /* Preview Assets.xcassets in Resources */,
 				0F912B6E2C3A30AB00D44DEF /* Assets.xcassets in Resources */,
+				D1EBA9822CEB187B008E0A11 /* metaBoxSkin1.usdz in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -268,13 +272,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				0F912B662C3A30A900D44DEF /* HomeContentView.swift in Sources */,
+				D1628D142CF6E9A500BA9227 /* metaBox.referenceobject in Sources */,
 				0F04F7D92C3A47FC00A2F072 /* AppState.swift in Sources */,
 				D178A9752CCF55DF007AD290 /* AppSelection.swift in Sources */,
 				D178A9732CCF2156007AD290 /* Unlock.swift in Sources */,
 				0F04F7D72C3A47A900A2F072 /* ObjectTrackingRealityView.swift in Sources */,
 				0F912B642C3A30A900D44DEF /* metaBoxMR.swift in Sources */,
 				D155A43B2CC26B8900F760AB /* ObjectAnchorVisualization.swift in Sources */,
-				D155A4732CC3DAD400F760AB /* metaBox2.referenceobject in Sources */,
 				0F04F7DB2C3A4C1000A2F072 /* ReferenceObjectLoader.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

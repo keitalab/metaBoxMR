@@ -9,7 +9,7 @@ import SwiftUI
 
 func unlock() {
 //    let urlString: String = "http://172.20.10.4/open"
-    let urlString: String = "http://192.168.100.150/open"
+    let urlString: String = "http://192.168.100.131/open"
     guard let url = URL(string: urlString) else { return }
     
     var request = URLRequest(url: url)

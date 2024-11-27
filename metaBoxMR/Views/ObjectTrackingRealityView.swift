@@ -46,7 +46,11 @@ struct ObjectTrackingRealityView: View {
                         if let entityId = attachments.entity(for: "testId") {
                             entityId.position = [0.16, 0.18, 0]
                             entityId.transform.rotation = simd_quatf(angle: Float.pi/2, axis: SIMD3<Float>(0,1,0))
+                            
+                            let skin = try await Entity(named: "metaBoxSkin1")
+                            
                             visualization.entity.addChild(entityId)
+                            visualization.entity.addChild(skin)
                         }
                         
 //                        // 複数エンティティの場合
