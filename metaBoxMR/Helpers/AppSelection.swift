@@ -22,5 +22,8 @@ let metaBoxApps: [FunctionModel] = [
     }),
     FunctionModel(name: "PayBox", action: {
         AnyView(PayBoxView())
+    }),
+    FunctionModel(name: "フリマBox", action: {
+        AnyView(FleaMarketBoxView())
     })
 ]
