@@ -125,34 +125,38 @@ struct SesameBoxView: View {
     // メインビュー
     var body: some View {
         VStack {
-            Text("合言葉Box")
-                .padding()
-                .font(.title)
-            
             if !isRecording {
-                HStack{
-                    Button("合言葉リセット") {
-                        startRecognition()
+                VStack {
+                    Text("合言葉Box")
+                        .padding()
+                        .font(.title)
+                    
+                    HStack{
+                        Button("合言葉リセット") {
+                        }
+                        Button("解錠") {
+                            startRecognition()
+                        }
+                    
                     }
-                    Button("解錠") {
-                        startRecognition()
-                    }
-                
                 }
-                .padding()
+                .transition(.blurReplace)
             } else if isRecording {
-                Text("合言葉を話してください")
-                    .font(.system(size: 16, weight: .semibold))
-                Image(systemName: "microphone.fill")
-                    .font(.system(size: 72, weight: .semibold))
-                    .padding()
-                Text(sesameBox.recognizedText)
-                    .padding()
-                    .font(.title)
+                VStack {
+                    Text("合言葉を話してください")
+                        .font(.system(size: 16, weight: .semibold))
+                    Image(systemName: "microphone.fill")
+                        .font(.system(size: 72, weight: .semibold))
+                        .padding()
+                    Text(sesameBox.recognizedText)
+                        .padding()
+                        .font(.title)
+                }
+                .transition(.blurReplace)
             }
         }
-        .frame(width: 400, height: 400)
-        .background(Color.black.opacity(0))
+        .background(Color.clear)
+        .animation(.default, value: isRecording)
         .onChange(of: sesameBox.recognizedText) {
             unlockMethod()
         }
