@@ -2,8 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSHandsTrackingUsageDescription</key>
+	<string>ハンドトラッキングを使用します。</string>
 	<key>NSWorldSensingUsageDescription</key>
-	<string>Object Tracking Capability Needed For This Demo</string>
+	<string>オブジェクトトラッキングを使用します。</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>音声録音のためにマイクを使用します。</string>
 	<key>UIApplicationSceneManifest</key>
