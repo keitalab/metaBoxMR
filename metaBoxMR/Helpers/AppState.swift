@@ -14,7 +14,11 @@ class AppState {
     var isImmersiveSpaceOpened = false
     
     let referenceObjectLoader = ReferenceObjectLoader()
+    
+    // 選択しているアプリ
+    var selectionValue = 0
 
+    // イマーシブスペースが閉じたらARKitセッションを停止
     func didLeaveImmersiveSpace() {
         // Stop the provider; the provider that just ran in the
         // immersive space is now in a paused state and isn't needed
@@ -23,37 +27,58 @@ class AppState {
         arkitSession.stop()
         isImmersiveSpaceOpened = false
     }
-    
-    //
-    var selectionValue = 0
 
     // MARK: - ARKit state
-
     private var arkitSession = ARKitSession()
     
     private var objectTracking: ObjectTrackingProvider? = nil
+    
+    private var handTracking: HandTrackingProvider? = nil
     
     var objectTrackingStartedRunning = false
     
     var providersStoppedWithError = false
     
     var worldSensingAuthorizationStatus = ARKitSession.AuthorizationStatus.notDetermined
-    
-    func startTracking() async -> ObjectTrackingProvider? {
-        let referenceObjects = referenceObjectLoader.enabledReferenceObjects
         
+    // ハンドトラッキングを非同期で開始する関数
+    func startHandTracking() async -> HandTrackingProvider? {
+        // ハンドトラッキングを開始
+        let handTracking = HandTrackingProvider()
+        
+        // ARKitセッションを開始
+        do {
+            try await arkitSession.run([handTracking])
+        } catch {
+            print("Error: \(error)" )
+            return nil
+        }
+        
+        // 返却
+        self.handTracking = handTracking
+        return handTracking
+    }
+
+    // オブジェクトトラッキングを非同期で開始する関数
+    func startTracking() async -> ObjectTrackingProvider? {
+        // リファレンスオブジェクトを取得
+        let referenceObjects = referenceObjectLoader.enabledReferenceObjects
         guard !referenceObjects.isEmpty else {
             fatalError("No reference objects to start tracking")
         }
         
-        // Run a new provider every time when entering the immersive space.
+        // オブジェクトトラッキングを開始
         let objectTracking = ObjectTrackingProvider(referenceObjects: referenceObjects)
+        
+        // ARKitセッションを開始
         do {
             try await arkitSession.run([objectTracking])
         } catch {
             print("Error: \(error)" )
             return nil
         }
+        
+        // 返却
         self.objectTracking = objectTracking
         return objectTracking
     }
