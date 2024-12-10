@@ -18,55 +18,116 @@ struct ObjectTrackingRealityView: View {
 
     // オブジェクトトラッキング用
     @State private var objectAnchors: [UUID: ObjectAnchorEntity] = [:]
+    
+    // ハンドトラッキング用の指先エンティティを作成
+    func createJointEntity() -> ModelEntity {
+        // 関節部のエンティティを作成
+        let jointEntity = ModelEntity(
+            mesh: .generateSphere(radius: 0.01),
+            materials: [SimpleMaterial(color: .green, isMetallic: false)]
+        )
 
-    // ハンドトラッキング用
-    private let fingerEntities: [HandAnchor.Chirality: ModelEntity] = [
-        .left: .createFingertip(),
-        .right: .createFingertip()
+        // 判定用に名前をつける
+        jointEntity.name = "handJoint"
+
+        // Collisionを追加
+        jointEntity.components.set(
+            CollisionComponent(
+                shapes: [.generateSphere(radius: 0.01)],
+                mode: .default
+            )
+        )
+
+        return jointEntity
+    }
+    
+    let handJoints: Array<AnchoringComponent.Target.HandLocation.HandJoint> = [
+//        .forearmArm,
+//        .forearmWrist,
+//        .indexFingerIntermediateBase,
+        .indexFingerTip,
+//        .indexFingerKnuckle,
+//        .indexFingerMetacarpal,
+//        .indexFingerIntermediateTip,
+//        .littleFingerIntermediateBase,
+        .littleFingerTip,
+//        .littleFingerKnuckle,
+//        .littleFingerMetacarpal,
+//        .littleFingerIntermediateTip,
+//        .middleFingerIntermediateBase,
+        .middleFingerTip,
+//        .middleFingerKnuckle,
+//        .middleFingerMetacarpal,
+//        .middleFingerIntermediateTip,
+//        .ringFingerIntermediateBase,
+        .ringFingerTip,
+//        .ringFingerKnuckle,
+//        .ringFingerMetacarpal,
+//        .ringFingerIntermediateTip,
+//        .thumbIntermediateBase,
+//        .thumbKnuckle,
+//        .thumbIntermediateTip,
+        .thumbTip,
+//        .wrist
     ]
+    
+    func handJointName(for joint: AnchoringComponent.Target.HandLocation.HandJoint) -> String {
+        switch joint {
+        case .indexFingerTip: return "indexFingerTip"
+        case .littleFingerTip: return "littleFingerTip"
+        case .middleFingerTip: return "middleFingerTip"
+        case .ringFingerTip: return "ringFingerTip"
+        case .thumbTip: return "thumbTip"
+        // 他のジョイントも必要に応じて追加
+        default: return "unknownJoint"
+        }
+    }
 
     var body: some View {
         RealityView { content, attachments in
             content.add(scene)  // シーンを追加
-
+                    
             Task {
                 // ----- ハンドトラッキングの処理 ----- //
-                
+
                 // ハンドトラッキングを開始
-                let handTracking = await appState.startHandTracking()
-                guard let handTracking else {
-                    return
-                }
+                let session = SpatialTrackingSession()
+                let configuration = SpatialTrackingSession.Configuration(tracking: [.hand])
                 
-                // アンカー更新時に非同期で実行
-                for await update in handTracking.anchorUpdates {
-                    switch update.event {
-                        // 更新時
-                    case .updated:
-                        // アンカーを更新
-                        let anchor = update.anchor
-                        
-                        // ハンドトラッキングデータが有効かチェック
-                        guard
-                            anchor.isTracked,
-                            let indexFingerTipJoint = anchor.handSkeleton?.joint(.indexFingerTip),
-                            indexFingerTipJoint.isTracked else { continue }
-                        
-                        // 関節のグローバル座標を計算
-                        // （アンカー座標からワールド座標の変換行列 * 関節座標からアンカー座標までの変換行列）
-                        let originFromIndexFingerTip = anchor.originFromAnchorTransform * indexFingerTipJoint.anchorFromJointTransform
-                        
-                        // 関節エンティティの座標をグローバル座標に設定
-                        fingerEntities[anchor.chirality]?.setTransformMatrix(originFromIndexFingerTip, relativeTo: nil)
-                        
-                        // 指先エンティティをシーンに追加
-                        for (_, entity) in fingerEntities {
-                            scene.addChild(entity)
+                if let unavailableCapabilities = await session.run(configuration) {
+                    if unavailableCapabilities.anchor.contains(.hand) {
+                        print("The device doesn't support plane tracking.")
+                    }
+                } else {
+                    // 左右の手に対して各ジョイント分のAnchorEntityを生成
+                    for chirality in [AnchoringComponent.Target.Chirality.left, .right] {
+                        for handjoint in handJoints {
+                            // ジョイントエンティティを生成
+                            let copyJointEntity = createJointEntity().clone(recursive: true)
+                            copyJointEntity.name = "HandJoint:\(chirality == .left ? "Left" : "Right")_\(handJointName(for: handjoint))"
+
+                            // 特定のジョイントに対してエンティティのサイズを拡大
+                            if handjoint == .wrist || handjoint == .forearmArm || handjoint == .forearmWrist {
+                                copyJointEntity.scale *= 5.0
+                            }
+
+                            // ハンドジョイントに対して固定
+                            let joint = AnchoringComponent.Target.HandLocation.joint(for: handjoint)
+                            
+                            // アンカーエンティティを生成
+                            let anchorEntity = AnchorEntity(.hand(chirality, location: joint), trackingMode: .predicted)
+                            
+                            // 物理シミュレーションを無効にする
+                            var anchorComponent = anchorEntity.components[AnchoringComponent.self]!
+                            anchorComponent.physicsSimulation = .none
+                            anchorEntity.components.set(anchorComponent)
+                            
+                            // ジョイントエンティティをアンカーエンティティに追加
+                            anchorEntity.addChild(copyJointEntity)
+                            
+                            // シーンに追加
+                            scene.addChild(anchorEntity)
                         }
-                        
-                        // その他
-                    default:
-                        break
                     }
                 }
             }
@@ -150,16 +211,15 @@ struct ObjectTrackingRealityView: View {
             
             // 衝突判定（開始時）
             _ = content.subscribe(to: CollisionEvents.Began.self) { collisionEvent in
-                if collisionEvent.entityA.name == "handJoint" && collisionEvent.entityB.name == "metaBoxSkin" {
-                    print("Collision Began!")
-                    unlock()
+                if collisionEvent.entityA.name.contains("HandJoint") && collisionEvent.entityB.name == "metaBoxSkin" {
+                    print("Collision Began between \(collisionEvent.entityA.name) and \(collisionEvent.entityB.name)")
                 }
             }
             
             // 衝突判定（終了時）
             _ = content.subscribe(to: CollisionEvents.Ended.self) { collisionEvent in
-                if collisionEvent.entityA.name == "handJoint" && collisionEvent.entityB.name == "metaBoxSkin" {
-                    print("Collision Ended!")
+                if collisionEvent.entityA.name.contains("HandJoint") && collisionEvent.entityB.name == "metaBoxSkin" {
+                    print("Collision Ended between \(collisionEvent.entityA.name) and \(collisionEvent.entityB.name)")
                 }
             }
         }
