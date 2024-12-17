@@ -13,19 +13,31 @@ import RealityKitContent
 @MainActor
 struct ObjectTrackingRealityView: View {
     // 共通
-    var appState: AppState
     var scene = Entity()
-
-    // オブジェクトトラッキング用
-    @State private var objectAnchors: [UUID: ObjectAnchorEntity] = [:]
+    var appState: AppState
+    var appClass: AppClass
+    var appView: AnyView
+    
+    @State private var timer: Timer?
+    @State private var isGrabbing: Bool = false
+    
+    init(appState: AppState) {
+        self.appState = appState
+        self.appClass = metaBoxApps[appState.selectionValue].appClass
+        self.appView = metaBoxApps[appState.selectionValue].appView
+    }
     
     // ハンドトラッキング用の指先エンティティを作成
     func createJointEntity() -> ModelEntity {
         // 関節部のエンティティを作成
         let jointEntity = ModelEntity(
-            mesh: .generateSphere(radius: 0.01),
+            mesh: .generateBox(size: [0.01, 0.01, 0.01]),
             materials: [SimpleMaterial(color: .green, isMetallic: false)]
         )
+        
+        // Materialを作成
+        var material = UnlitMaterial(color: .red)
+        material.blending = .transparent(opacity: PhysicallyBasedMaterial.Opacity(floatLiteral: 0.0))
 
         // 判定用に名前をつける
         jointEntity.name = "handJoint"
@@ -33,60 +45,89 @@ struct ObjectTrackingRealityView: View {
         // Collisionを追加
         jointEntity.components.set(
             CollisionComponent(
-                shapes: [.generateSphere(radius: 0.01)],
+                shapes: [.generateBox(size: [0.01, 0.01, 0.01])],
                 mode: .default
             )
         )
+        
+        // Materialを設定
+        jointEntity.model?.materials = [material]
 
         return jointEntity
     }
     
+    // ハンドトラッキング用のジョイント
     let handJoints: Array<AnchoringComponent.Target.HandLocation.HandJoint> = [
 //        .forearmArm,
 //        .forearmWrist,
-//        .indexFingerIntermediateBase,
-        .indexFingerTip,
+        .indexFingerIntermediateBase,
+//        .indexFingerTip,
 //        .indexFingerKnuckle,
 //        .indexFingerMetacarpal,
 //        .indexFingerIntermediateTip,
-//        .littleFingerIntermediateBase,
-        .littleFingerTip,
-//        .littleFingerKnuckle,
-//        .littleFingerMetacarpal,
-//        .littleFingerIntermediateTip,
-//        .middleFingerIntermediateBase,
-        .middleFingerTip,
+        .middleFingerIntermediateBase,
+//        .middleFingerTip,
 //        .middleFingerKnuckle,
 //        .middleFingerMetacarpal,
 //        .middleFingerIntermediateTip,
 //        .ringFingerIntermediateBase,
-        .ringFingerTip,
+//        .ringFingerTip,
 //        .ringFingerKnuckle,
 //        .ringFingerMetacarpal,
 //        .ringFingerIntermediateTip,
+//        .littleFingerIntermediateBase,
+//        .littleFingerTip,
+//        .littleFingerKnuckle,
+//        .littleFingerMetacarpal,
+//        .littleFingerIntermediateTip,
 //        .thumbIntermediateBase,
 //        .thumbKnuckle,
 //        .thumbIntermediateTip,
         .thumbTip,
-//        .wrist
+        .wrist
     ]
     
+    // ハンドトラッキング用のジョイント名
     func handJointName(for joint: AnchoringComponent.Target.HandLocation.HandJoint) -> String {
         switch joint {
         case .indexFingerTip: return "indexFingerTip"
-        case .littleFingerTip: return "littleFingerTip"
+        case .indexFingerIntermediateBase: return "indexFingerIntermediateBase"
         case .middleFingerTip: return "middleFingerTip"
+        case .middleFingerIntermediateBase: return "middleFingerIntermediateBase"
         case .ringFingerTip: return "ringFingerTip"
+        case .littleFingerTip: return "littleFingerTip"
         case .thumbTip: return "thumbTip"
+        case .wrist: return "wrist"
         // 他のジョイントも必要に応じて追加
         default: return "unknownJoint"
         }
     }
+    
+    func removeHandJointEntities(from scene: Entity) {
+        for child in scene.children {
+            // "HandJoint"を含む名前のエンティティを削除
+            if child.name.contains("HandJoint") {
+                child.removeFromParent()
+            } else {
+                // 子エンティティも再帰的に探索
+                removeHandJointEntities(from: child)
+            }
+        }
+    }
+    
+    // オブジェクトトラッキング用のアンカーエンティティ
+    @State private var objectAnchors: [UUID: ObjectAnchorEntity] = [:]
 
     var body: some View {
         RealityView { content, attachments in
             content.add(scene)  // シーンを追加
-                    
+
+            Task {
+                await appClass.addEntity(to: scene)
+            }
+            
+            
+            
             Task {
                 // ----- ハンドトラッキングの処理 ----- //
 
@@ -166,37 +207,11 @@ struct ObjectTrackingRealityView: View {
                         } else {
                             print("Attachment entity not found for ID: attachmentId")
                         }
-
-                        // スキンを配置
-                        if let skinEntity = try? await ModelEntity(named: "metaBoxSkin1") {
-                            // 判定用に名前をつける
-                            skinEntity.name = "metaBoxSkin"
-                            
-                            // メッシュを取得
-                            let modelMesh = skinEntity.model!.mesh
-                            
-                            // CollisionComponentを作成
-                            let skinCollision = try? await CollisionComponent(
-                                shapes: [.generateConvex(from: modelMesh)],
-                                mode: .default
-                            )
-
-                            // PhysicsBodyComponentを作成
-                            var skinPhysicsBody = try? await PhysicsBodyComponent(
-                                shapes: [ShapeResource.generateConvex(from: modelMesh)],
-                                mass: 0.1,
-                                material: nil,
-                                mode: .dynamic
-                            )
-                            skinPhysicsBody?.isAffectedByGravity = false
-
-                            // Collision, PhysicsBodyを設定
-                            skinEntity.components.set(skinCollision!)
-                            skinEntity.components.set(skinPhysicsBody!)
-
-                            // シーンに追加
-                            anchorEntity.entity.addChild(skinEntity)
-                        }
+                        
+                        // オブジェクトトラッキング用にエンティティを追加
+                        await appClass.addSkinEntity(anchorEntity: anchorEntity)
+                        await appClass.addEntityForObjectTracking(anchorEntity: anchorEntity)
+                        
                     // 更新時
                     case .updated:
                         self.objectAnchors[id]?.update(with: anchor)
@@ -209,34 +224,52 @@ struct ObjectTrackingRealityView: View {
                 }
             }
             
+            // ----- 衝突判定の処理 ----- //
+            
             // 衝突判定（開始時）
             _ = content.subscribe(to: CollisionEvents.Began.self) { collisionEvent in
-                if collisionEvent.entityA.name.contains("HandJoint") && collisionEvent.entityB.name == "metaBoxSkin" {
-                    print("Collision Began between \(collisionEvent.entityA.name) and \(collisionEvent.entityB.name)")
-                }
+                appClass.handleCollisionBegin(entityA: collisionEvent.entityA, entityB: collisionEvent.entityB)
             }
             
             // 衝突判定（終了時）
             _ = content.subscribe(to: CollisionEvents.Ended.self) { collisionEvent in
-                if collisionEvent.entityA.name.contains("HandJoint") && collisionEvent.entityB.name == "metaBoxSkin" {
-                    print("Collision Ended between \(collisionEvent.entityA.name) and \(collisionEvent.entityB.name)")
-                }
+                appClass.handleCollisionEnded(entityA: collisionEvent.entityA, entityB: collisionEvent.entityB)
             }
         }
         attachments: {
             Attachment(id: "attachmentId") {
                 // アプリケーションを表示
-                metaBoxApps[appState.selectionValue].action()
+                AnyView(appView)
             }
         }
         .onAppear() {
             appState.isImmersiveSpaceOpened = true
+
+            // 処理の実行
+            timer = Timer.scheduledTimer(withTimeInterval: 0.005, repeats: true) { _ in
+                Task {
+                    await appClass.handTrackingInteraction(to: scene)
+                }
+            }
         }
         .onDisappear() {
+            // オブジェクトトラッキングを終了
             for (_, visualization) in objectAnchors {
                 scene.removeChild(visualization.entity)
             }
             objectAnchors.removeAll()
+            
+            // オブジェクトを削除
+            appClass.removeEntity(from: scene)
+            
+            // ハンドジョイントを削除
+            removeHandJointEntities(from: scene)
+            
+            // タイマーを破棄
+            timer?.invalidate()
+            timer = nil
+            
+            // イマーシブスペースを終了
             appState.didLeaveImmersiveSpace()
         }
     }
