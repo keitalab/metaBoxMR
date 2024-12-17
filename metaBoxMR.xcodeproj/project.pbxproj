@@ -16,12 +16,11 @@
 		0F912B6E2C3A30AB00D44DEF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0F912B6D2C3A30AB00D44DEF /* Assets.xcassets */; };
 		0F912B712C3A30AB00D44DEF /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0F912B702C3A30AB00D44DEF /* Preview Assets.xcassets */; };
 		0F912B7C2C3A30AB00D44DEF /* VisionOSObjectTrackingDemoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F912B7B2C3A30AB00D44DEF /* VisionOSObjectTrackingDemoTests.swift */; };
-		D133301D2D0322F70012450D /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D133301C2D0322F40012450D /* Extensions.swift */; };
 		D155A43B2CC26B8900F760AB /* ObjectAnchorEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = D155A43A2CC26B8900F760AB /* ObjectAnchorEntity.swift */; };
 		D1628D142CF6E9A500BA9227 /* metaBox.referenceobject in Sources */ = {isa = PBXBuildFile; fileRef = D1628D132CF6E9A500BA9227 /* metaBox.referenceobject */; };
 		D178A9732CCF2156007AD290 /* Unlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = D178A9722CCF2156007AD290 /* Unlock.swift */; };
 		D178A9752CCF55DF007AD290 /* AppSelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = D178A9742CCF55D6007AD290 /* AppSelection.swift */; };
-		D1EBA9822CEB187B008E0A11 /* metaBoxSkin1.usdz in Resources */ = {isa = PBXBuildFile; fileRef = D1EBA9812CEB187B008E0A11 /* metaBoxSkin1.usdz */; };
+		D1F09EF72D0AC6BF0091F5C1 /* MathClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1F09EF62D0AC6AE0091F5C1 /* MathClass.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -47,15 +46,15 @@
 		0F912B722C3A30AB00D44DEF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0F912B772C3A30AB00D44DEF /* metaBoxMRTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = metaBoxMRTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		0F912B7B2C3A30AB00D44DEF /* VisionOSObjectTrackingDemoTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisionOSObjectTrackingDemoTests.swift; sourceTree = "<group>"; };
-		D133301C2D0322F40012450D /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		D155A43A2CC26B8900F760AB /* ObjectAnchorEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectAnchorEntity.swift; sourceTree = "<group>"; };
 		D1628D132CF6E9A500BA9227 /* metaBox.referenceobject */ = {isa = PBXFileReference; lastKnownFileType = file.referenceobject; path = metaBox.referenceobject; sourceTree = "<group>"; };
 		D178A9722CCF2156007AD290 /* Unlock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Unlock.swift; sourceTree = "<group>"; };
 		D178A9742CCF55D6007AD290 /* AppSelection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSelection.swift; sourceTree = "<group>"; };
-		D1EBA9812CEB187B008E0A11 /* metaBoxSkin1.usdz */ = {isa = PBXFileReference; lastKnownFileType = file; path = metaBoxSkin1.usdz; sourceTree = "<group>"; };
+		D1F09EF62D0AC6AE0091F5C1 /* MathClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MathClass.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		D155B9992D0DAAF1008CFB80 /* Models */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Models; sourceTree = "<group>"; };
 		D16ED3A22CCB795000B03879 /* Apps */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Apps; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
@@ -81,10 +80,10 @@
 		0F04F7D22C3A472200A2F072 /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
-				D133301C2D0322F40012450D /* Extensions.swift */,
 				0F04F7DA2C3A4C1000A2F072 /* ReferenceObjectLoader.swift */,
-				0F04F7D82C3A47FC00A2F072 /* AppState.swift */,
+				D1F09EF62D0AC6AE0091F5C1 /* MathClass.swift */,
 				D155A43A2CC26B8900F760AB /* ObjectAnchorEntity.swift */,
+				0F04F7D82C3A47FC00A2F072 /* AppState.swift */,
 				D178A9722CCF2156007AD290 /* Unlock.swift */,
 				D178A9742CCF55D6007AD290 /* AppSelection.swift */,
 			);
@@ -94,7 +93,6 @@
 		0F04F7D52C3A479B00A2F072 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				D1EBA9812CEB187B008E0A11 /* metaBoxSkin1.usdz */,
 				0F912B652C3A30A900D44DEF /* HomeContentView.swift */,
 				0F04F7D62C3A47A900A2F072 /* ObjectTrackingRealityView.swift */,
 			);
@@ -133,6 +131,7 @@
 			isa = PBXGroup;
 			children = (
 				0F912B632C3A30A900D44DEF /* metaBoxMR.swift */,
+				D155B9992D0DAAF1008CFB80 /* Models */,
 				D16ED3A22CCB795000B03879 /* Apps */,
 				0F04F7D52C3A479B00A2F072 /* Views */,
 				0F04F7D22C3A472200A2F072 /* Helpers */,
@@ -183,6 +182,7 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
+				D155B9992D0DAAF1008CFB80 /* Models */,
 				D16ED3A22CCB795000B03879 /* Apps */,
 			);
 			name = metaBoxMR;
@@ -256,7 +256,6 @@
 			files = (
 				0F912B712C3A30AB00D44DEF /* Preview Assets.xcassets in Resources */,
 				0F912B6E2C3A30AB00D44DEF /* Assets.xcassets in Resources */,
-				D1EBA9822CEB187B008E0A11 /* metaBoxSkin1.usdz in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -278,9 +277,9 @@
 				D1628D142CF6E9A500BA9227 /* metaBox.referenceobject in Sources */,
 				0F04F7D92C3A47FC00A2F072 /* AppState.swift in Sources */,
 				D178A9752CCF55DF007AD290 /* AppSelection.swift in Sources */,
+				D1F09EF72D0AC6BF0091F5C1 /* MathClass.swift in Sources */,
 				D178A9732CCF2156007AD290 /* Unlock.swift in Sources */,
 				0F04F7D72C3A47A900A2F072 /* ObjectTrackingRealityView.swift in Sources */,
-				D133301D2D0322F70012450D /* Extensions.swift in Sources */,
 				0F912B642C3A30A900D44DEF /* metaBoxMR.swift in Sources */,
 				D155A43B2CC26B8900F760AB /* ObjectAnchorEntity.swift in Sources */,
 				0F04F7DB2C3A4C1000A2F072 /* ReferenceObjectLoader.swift in Sources */,
