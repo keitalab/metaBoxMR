@@ -10,20 +10,29 @@ import SwiftUI
 struct FunctionModel: Identifiable {
     let id = UUID()
     let name: String
-    let action: () -> AnyView
+    let appView: AnyView
+    let appClass: AppClass
 }
 
 let metaBoxApps: [FunctionModel] = [
-    FunctionModel(name: "タイマーBox", action: {
-        AnyView(TimerBoxView())
-    }),
-    FunctionModel(name: "合言葉Box", action: {
-        AnyView(SesameBoxView())
-    }),
-    FunctionModel(name: "PayBox", action: {
-        AnyView(PayBoxView())
-    }),
-    FunctionModel(name: "フリマBox", action: {
-        AnyView(FleaMarketBoxView())
-    })
+    FunctionModel(
+        name: "合言葉Box",
+        appView: AnyView(SesameBoxView()),
+        appClass: SesameBox.shared
+    ),
+    FunctionModel(
+        name: "宝箱Box",
+        appView: AnyView(TreasureBoxView()),
+        appClass: TreasureBox.shared
+    ),
+    FunctionModel(
+        name: "タイマーBox",
+        appView: AnyView(TimerBoxView()),
+        appClass: TimerBox.shared
+    ),
+    FunctionModel(
+        name: "フリマBox",
+        appView: AnyView(FleaMarketBoxView()),
+        appClass: FleaMarketBox.shared
+    ),
 ]

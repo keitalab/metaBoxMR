@@ -7,6 +7,10 @@
 
 import SwiftUI
 
+final class FleaMarketBox: AppClass {
+    static let shared = FleaMarketBox()
+}
+
 class ProductInfo: ObservableObject {
     @Published var name: String = ""
     @Published var description: String = ""

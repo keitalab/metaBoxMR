@@ -6,6 +6,11 @@
 //
 
 import SwiftUI
+import RealityKit
+
+final class TimerBox: AppClass {
+    static let shared = TimerBox()
+}
 
 struct TimerBoxView: View {
     @State private var timer: Timer? = nil
@@ -137,14 +142,4 @@ struct TimerBoxView: View {
             .padding()
         }
     }
-    
-    struct TimerBoxView_Previews: PreviewProvider {
-        static var previews: some View {
-            TimerBoxView()
-        }
-    }
-}
-
-#Preview(windowStyle: .automatic) {
-    TimerBoxView()
 }
