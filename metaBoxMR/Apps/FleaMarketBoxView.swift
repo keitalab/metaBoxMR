@@ -11,26 +11,44 @@ final class FleaMarketBox: AppClass {
     static let shared = FleaMarketBox()
 }
 
-class ProductInfo: ObservableObject {
-    @Published var name: String = ""
-    @Published var description: String = ""
-    @Published var price: Int? = nil
-    @Published var isSelling: Bool = false
+// 商品情報の型定義
+struct Product {
+    var name: String
+    var description: String
+    var price: Int
+}
+
+// 商品情報
+class ProductViewModel: ObservableObject {
+    @Published var product: Product?
+    
+    func initProduct() {
+        product = nil
+    }
+    
+    func setProduct(product: Product) {
+        self.product = product
+    }
 }
 
 struct FleaMarketBoxView: View {
-    @StateObject private var productInfo = ProductInfo()
+    // 状態遷移
+    enum ViewState {
+        case sale, shop
+    }
     
-    @State private var currentView: Int = 0
+    @StateObject private var productViewModel = ProductViewModel()
+    
+    @State private var currentState: ViewState = .shop
     
     var body: some View {
         VStack {
             VStack {
-                Picker("", selection: self.$currentView) {
+                Picker("", selection: self.$currentState) {
                     Text("購入")
-                        .tag(0)
+                        .tag(ViewState.shop)
                     Text("出品")
-                        .tag(1)
+                        .tag(ViewState.sale)
                 }
                 .pickerStyle(.segmented)
                 .frame(width: 150)
@@ -38,31 +56,19 @@ struct FleaMarketBoxView: View {
             }
             
             VStack {
-                switch currentView {
-                case 1:
-                    saleView(productInfo: productInfo)
+                switch currentState {
+                case .sale:
+                    SaleView(productViewModel: productViewModel)
                         .transition(.blurReplace)
-                default:
-                    shopView(productInfo: productInfo)
+                case .shop:
+                    ShopView(productViewModel: productViewModel)
                         .transition(.blurReplace)
                 }
             }
             .frame(width: 400, height: 400)
         }
         .background(Color.clear)
-        .animation(.default, value: currentView)
-        
-//        TabView {
-//            saleView(productInfo: productInfo)
-//                .tabItem {
-//                    Label("出品", systemImage: "camera.fill")
-//                }.tag(0)
-//
-//            shopView(productInfo: productInfo)
-//                .tabItem {
-//                    Label("購入", systemImage: "cart.fill")
-//                }.tag(1)
-//        }
+        .animation(.default, value: currentState)
     }
    
     struct FleaMarketBoxView_Previews: PreviewProvider {
@@ -73,37 +79,34 @@ struct FleaMarketBoxView: View {
 }
 
 // 出品ビュー
-struct saleView: View {
-    @ObservedObject var productInfo: ProductInfo
+struct SaleView: View {
+    // 状態遷移
+    enum ViewState {
+        case attention, success, info
+    }
     
-    @State private var currentView: Int = 0
-    
+    @ObservedObject var productViewModel: ProductViewModel
+    @State private var currentState: ViewState = .info
     @State private var isShowAlert: Bool = false
-
-    @State private var _name: String = ""
-    @State private var _description: String = ""
-    @State private var _price: Int? = nil
+    @State private var formInfo: Product = Product(name: "", description: "", price: 0)
     
     // 商品情報を登録
     func setInfo() {
-        productInfo.name = _name
-        productInfo.description = _description
-        productInfo.price = _price
-        productInfo.isSelling = true
+        productViewModel.product = formInfo
     }
     
     // body
     var body: some View {
         ZStack {
-            switch currentView {
-            case 1:
+            switch currentState {
+            case .attention:
                 attentionView
                     .transition(.blurReplace)
-            case 2:
-                sucsessView
+            case .success:
+                successView
                     .transition(.blurReplace)
-            default:
-                if(!productInfo.isSelling) {
+            case .info:
+                if(productViewModel.product == nil) {
                     infoView
                         .transition(.blurReplace)
                 } else {
@@ -113,7 +116,7 @@ struct saleView: View {
             }
         }
         .background(Color.clear)
-        .animation(.default, value: currentView)
+        .animation(.default, value: currentState)
     }
     
     // 商品情報入力
@@ -129,19 +132,19 @@ struct saleView: View {
                 VStack(alignment: .leading) {
                     Text("商品名")
                         .font(.title2)
-                    TextField("商品名を入力してください", text: $_name)
+                    TextField("商品名を入力してください", text: $formInfo.name)
                 }
                 
                 VStack(alignment: .leading) {
                     Text("商品の説明")
                         .font(.title2)
-                    TextField("商品の説明を入力してください", text: $_description)
+                    TextField("商品の説明を入力してください", text: $formInfo.description)
                 }
 
                 VStack(alignment: .leading) {
                     Text("金額")
                         .font(.title2)
-                    TextField("商品の金額を入力してください", value: $_price, format: .number)
+                    TextField("商品の金額を入力してください", value: $formInfo.price, format: .number)
                         .keyboardType(.decimalPad)
                 }
             }
@@ -151,26 +154,24 @@ struct saleView: View {
             Spacer()
             
             Button("次に進む") {
-                if _name == "" || _description == "" || _price == nil {
+                guard !formInfo.name.isEmpty,
+                      formInfo.price > 0 else {
                     isShowAlert = true
+                    return
                 }
                 
-                if(!isShowAlert) {
-                    currentView = 1
-                    
-                    // metaBoxを解錠
-                    unlock()
-                }
+                currentState = .attention
+                unlock()
             }
             .alert("必要な情報が入力されていません", isPresented: $isShowAlert) {
                 Button("入力する") {}
             } message: {
-                if _name == "" {
+                if formInfo.name.isEmpty {
                     Text("商品名を入力してください")
-                } else if _description == "" {
-                    Text("商品の説明を入力してください")
-                } else if _price == nil {
+                } else if formInfo.price <= 0 {
                     Text("金額を入力してください")
+                } else {
+                    Text("入力内容に不備があります")
                 }
             }
             .padding()
@@ -189,28 +190,28 @@ struct saleView: View {
             
             HStack(spacing: 20) {
                 Button("戻る") {
-                    currentView = 0
+                    currentState = .info
                 }
                 
                 Button("商品を出品する") {
-                    currentView = 2
+                    currentState = .success
 
                     // 商品情報を登録
-                    setInfo()
+                    productViewModel.setProduct(product: formInfo)
                 }
             }
         }
     }
     
     // 出品完了
-    var sucsessView: some View {
+    var successView: some View {
         VStack {
             Text("出品が完了しました")
                 .padding()
                 .font(.title)
             
             Button("トップページに戻る") {
-                currentView = 0
+                currentState = .info
             }
         }
     }
@@ -231,27 +232,24 @@ struct saleView: View {
 }
 
 // 販売ビュー
-struct shopView: View {
-    @ObservedObject var productInfo: ProductInfo
-    
-    @State private var currentView: Int = 0
-    
-    func initInfo() {
-        productInfo.name = ""
-        productInfo.description = ""
-        productInfo.price = nil
-        productInfo.isSelling = false
+struct ShopView: View {
+    // 状態遷移
+    enum ViewState {
+        case main, complete
     }
+    
+    @ObservedObject var productViewModel: ProductViewModel
+    @State private var currentState: ViewState = .main
     
     var body: some View {
         ZStack {
-            switch currentView {
-            case 1:
+            switch currentState {
+            case .complete:
                 completeView
                     .transition(.blurReplace)
-            default:
-                if(!productInfo.isSelling) {
-                    cannotshopView
+            case .main:
+                if(productViewModel.product == nil) {
+                    cannotShopView
                         .transition(.blurReplace)
                 } else {
                     mainView
@@ -260,68 +258,69 @@ struct shopView: View {
             }
         }
         .background(Color.clear)
-        .animation(.default, value: currentView)
+        .animation(.default, value: currentState)
     }
     
     // 販売中の商品情報
     var mainView: some View {
         VStack {
-            Text("フリマBox")
-                .padding()
-                .font(.title)
-            
-            Spacer()
-            
-            VStack(spacing: 10) {
-                HStack {
-                    Text(productInfo.name)
-                        .font(.system(size: 24, weight: .semibold))
-                    Spacer()
-                }
-                .padding(.horizontal, 40)
+            if let product = productViewModel.product {
+                Text("フリマBox")
+                    .padding()
+                    .font(.title)
                 
-                HStack {
-                    HStack(alignment: .bottom, spacing: 0) {
-                        Text("￥")
-                            .baselineOffset(5)
-                            .font(.system(size: 20))
-                            .foregroundStyle(.tertiary)
-                        Text(String(productInfo.price ?? 0))
-                            .font(.system(size: 36, weight: .semibold))
+                Spacer()
+            
+                VStack(spacing: 10) {
+                    HStack {
+                        Text(product.name)
+                            .font(.system(size: 24, weight: .semibold))
+                        Spacer()
                     }
-                    Spacer()
+                    .padding(.horizontal, 40)
+                    
+                    HStack {
+                        HStack(alignment: .bottom, spacing: 0) {
+                            Text("￥")
+                                .baselineOffset(5)
+                                .font(.system(size: 20))
+                                .foregroundStyle(.tertiary)
+                            Text((product.price == 0) ? "無料" : String(product.price))
+                                .font(.system(size: 36, weight: .semibold))
+                        }
+                        Spacer()
+                    }
+                    .padding(.horizontal, 37)
+                    
+                    HStack {
+                        Text(String("商品の説明"))
+                            .font(.system(size: 20, weight: .semibold))
+                            .foregroundStyle(.tertiary)
+                        Spacer()
+                    }
+                    .padding(.top, 30)
+                    .padding(.horizontal, 40)
+                    
+                    HStack {
+                        Text((product.description.isEmpty) ? "商品の説明はありません" : product.description)
+                            .font(.system(size: 16, weight: .semibold))
+                        Spacer()
+                    }
+                    .padding(.horizontal, 40)
                 }
-                .padding(.horizontal, 37)
                 
-                HStack {
-                    Text(String("商品の説明"))
-                        .font(.system(size: 20, weight: .semibold))
-                        .foregroundStyle(.tertiary)
-                    Spacer()
-                }
-                .padding(.top, 30)
-                .padding(.horizontal, 40)
+                Spacer()
                 
-                HStack {
-                    Text(String(productInfo.description))
-                        .font(.system(size: 16, weight: .semibold))
-                    Spacer()
+                Button("購入する") {
+                    currentState = .complete
+                    
+                    // metaBoxを解錠
+                    unlock()
                 }
-                .padding(.horizontal, 40)
+                .padding()
+            } else {
+                
             }
-            
-            Spacer()
-            
-            Button("購入する") {
-                currentView = 1
-                
-                // 商品情報を初期化
-                initInfo()
-                
-                // metaBoxを解錠
-                unlock()
-            }
-            .padding()
         }
         .frame(width: 400, height: 400)
     }
@@ -329,28 +328,31 @@ struct shopView: View {
     // 購入完了画面
     var completeView: some View {
         VStack(spacing: 10) {
-            HStack {
-                Image(systemName: "checkmark.circle")
-                    .font(.system(size: 20))
-                    .foregroundStyle(.green)
-                Text("購入が完了しました")
-                    .font(.system(size: 20, weight: .semibold))
-            }
+            if let product = productViewModel.product {
+                HStack {
+                    Image(systemName: "checkmark.circle")
+                        .font(.system(size: 20))
+                        .foregroundStyle(.green)
+                    Text("購入が完了しました")
+                        .font(.system(size: 20, weight: .semibold))
+                }
+                    
+                HStack {
+                    Text(product.name)
+                        .font(.system(size: 24, weight: .semibold))
+                }
                 
-            HStack {
-                Text(productInfo.name)
-                    .font(.system(size: 24, weight: .semibold))
+                Button("購入画面に戻る") {
+                    productViewModel.initProduct()
+                    currentState = .main
+                }
+                .padding()
             }
-            
-            Button("購入画面に戻る") {
-                currentView = 0
-            }
-            .padding()
         }
     }
     
     // 出品されていない場合
-    var cannotshopView: some View {
+    var cannotShopView: some View {
         VStack {
             Text("商品が出品されていません")
                 .padding()
