@@ -35,6 +35,8 @@ class AppState {
     
     private var handTracking: HandTrackingProvider? = nil
     
+    
+    
     var objectTrackingStartedRunning = false
     
     var providersStoppedWithError = false
@@ -81,6 +83,19 @@ class AppState {
         // 返却
         self.objectTracking = objectTracking
         return objectTracking
+    }
+    
+    // シーン再構築を非同期で開始する関数
+    func startSceneReconstruction() async -> SceneReconstructionProvider? {
+        let sceneReconstruction = SceneReconstructionProvider()
+        do {
+            try await arkitSession.run([sceneReconstruction])
+        } catch {
+            print("Error: \(error)")
+            return nil
+        }
+        
+        return sceneReconstruction
     }
     
     var allRequiredAuthorizationsAreGranted: Bool {

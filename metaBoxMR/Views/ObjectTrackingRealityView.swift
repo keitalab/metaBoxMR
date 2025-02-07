@@ -117,6 +117,38 @@ struct ObjectTrackingRealityView: View {
     
     // オブジェクトトラッキング用のアンカーエンティティ
     @State private var objectAnchors: [UUID: ObjectAnchorEntity] = [:]
+    
+    // シーン検出用のアンカーエンティティ
+    @State private var meshEntities = [UUID: ModelEntity]()
+    
+    func createCubeEntity() -> ModelEntity {
+        // 立方体のエンティティを生成
+        let cubeEntity = ModelEntity(
+            mesh: .generateBox(size: [0.1, 0.1, 0.1]), // サイズを指定
+            materials: [SimpleMaterial(color: .blue, isMetallic: false)]
+        )
+        
+        // 衝突用コンポーネントを追加
+        cubeEntity.components.set(
+            CollisionComponent(
+                shapes: [.generateBox(size: [0.1, 0.1, 0.1])],
+                mode: .default
+            )
+        )
+        
+        // 物理演算コンポーネントを追加
+        cubeEntity.components.set(
+            PhysicsBodyComponent(
+                massProperties: .init(mass: 1.0), // 質量を指定
+                material: .generate(friction: 0.5, restitution: 0.3), // 摩擦と反発係数
+                mode: .dynamic // 動的物理演算を有効化
+            )
+        )
+        
+        cubeEntity.name = "Cube"
+        
+        return cubeEntity
+    }
 
     var body: some View {
         RealityView { content, attachments in
@@ -224,6 +256,49 @@ struct ObjectTrackingRealityView: View {
                 }
             }
             
+            Task {
+                // ----- シーン検出 ----- //
+                
+                // シーン検出を開始
+                let sceneReconstruction = await appState.startSceneReconstruction()
+                guard let sceneReconstruction else {
+                    return
+                }
+                
+                // アンカー更新時に非同期で実行
+                for await update in sceneReconstruction.anchorUpdates {
+                    let meshAnchor = update.anchor
+
+                    guard let shape = try? await ShapeResource.generateStaticMesh(from: meshAnchor) else { continue }
+                    
+                    // イベント
+                    switch update.event {
+                    // 追加時
+                    case .added:
+                        let anchorEntity = ModelEntity()
+                        anchorEntity.transform = Transform(matrix: meshAnchor.originFromAnchorTransform)
+//                        anchorEntity.collision = CollisionComponent(shapes: [shape], isStatic: true)
+//                        anchorEntity.components.set(InputTargetComponent())
+//                        anchorEntity.physicsBody = PhysicsBodyComponent(mode: .static)
+                        
+                        meshEntities[meshAnchor.id] = anchorEntity
+                        
+                        scene.addChild(anchorEntity)
+                        
+                    // 更新時
+                    case .updated:
+                        guard let anchorEntity = meshEntities[meshAnchor.id] else { continue }
+                        anchorEntity.transform = Transform(matrix: meshAnchor.originFromAnchorTransform)
+//                        anchorEntity.collision?.shapes = [shape]
+                        
+                    // 削除時
+                    case .removed:
+                        meshEntities[meshAnchor.id]?.removeFromParent()
+                        meshEntities.removeValue(forKey: meshAnchor.id)
+                    }
+                }
+            }
+            
             // ----- 衝突判定の処理 ----- //
             
             // 衝突判定（開始時）
@@ -244,6 +319,11 @@ struct ObjectTrackingRealityView: View {
         }
         .onAppear() {
             appState.isImmersiveSpaceOpened = true
+
+//            // 立方体を作成してシーンに追加
+//            let cubeEntity = createCubeEntity()
+//            cubeEntity.position = [0, 1, -0.5] // シーン内での配置位置を設定
+//            scene.addChild(cubeEntity)
 
             // 処理の実行
             timer = Timer.scheduledTimer(withTimeInterval: 0.005, repeats: true) { _ in

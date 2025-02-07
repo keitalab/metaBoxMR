@@ -50,6 +50,14 @@ class AppClass: ObservableObject {
             skinEntity.components.set(skinCollision!)
             skinEntity.components.set(skinPhysicsBody!)
             
+            // スケールを1.05倍に設定
+            let currentTransform = skinEntity.transform
+            skinEntity.transform = Transform(
+                scale: currentTransform.scale * 1.05,
+                rotation: currentTransform.rotation,
+                translation: currentTransform.translation
+            )
+            
             // スキンエンティティをアンカーエンティティに追加
             anchorEntity.entity.addChild(skinEntity)
         }
