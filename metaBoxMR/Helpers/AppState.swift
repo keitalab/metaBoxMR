@@ -6,56 +6,55 @@ The app's overall state.
 */
 
 import ARKit
-import RealityKitContent;
+import RealityKit
+import RealityKitContent
 
 @MainActor
 @Observable
 class AppState {
-    var isImmersiveSpaceOpened = false
-    
+    // シーン
+    var scene = Entity()
+
+    // リファレンスオブジェクトローダー
     let referenceObjectLoader = ReferenceObjectLoader()
-    
+
     // 選択しているアプリ
     var selectionValue = 0
 
+    // デバッグモード
+    var debugMode = true
+
     // イマーシブスペースが閉じたらARKitセッションを停止
     func didLeaveImmersiveSpace() {
-        // Stop the provider; the provider that just ran in the
-        // immersive space is now in a paused state and isn't needed
-        // anymore. When a person reenters the immersive space,
-        // run a new provider.
         arkitSession.stop()
-        isImmersiveSpaceOpened = false
     }
 
     // MARK: - ARKit state
     private var arkitSession = ARKitSession()
-    
+
     private var objectTracking: ObjectTrackingProvider? = nil
-    
+
     private var handTracking: HandTrackingProvider? = nil
-    
-    
-    
+
     var objectTrackingStartedRunning = false
-    
+
     var providersStoppedWithError = false
-    
+
     var worldSensingAuthorizationStatus = ARKitSession.AuthorizationStatus.notDetermined
-        
+
     // ハンドトラッキングを非同期で開始する関数
     func startHandTracking() async -> HandTrackingProvider? {
         // ハンドトラッキングを開始
         let handTracking = HandTrackingProvider()
-        
+
         // ARKitセッションを開始
         do {
             try await arkitSession.run([handTracking])
         } catch {
-            print("Error: \(error)" )
+            print("DEBUG!: \(error)" )
             return nil
         }
-        
+
         // 返却
         self.handTracking = handTracking
         return handTracking
@@ -68,36 +67,36 @@ class AppState {
         guard !referenceObjects.isEmpty else {
             fatalError("No reference objects to start tracking")
         }
-        
+
         // オブジェクトトラッキングを開始
         let objectTracking = ObjectTrackingProvider(referenceObjects: referenceObjects)
-        
+
         // ARKitセッションを開始
         do {
             try await arkitSession.run([objectTracking])
         } catch {
-            print("Error: \(error)" )
+            print("DEBUG!: \(error)" )
             return nil
         }
-        
+
         // 返却
         self.objectTracking = objectTracking
         return objectTracking
     }
-    
+
     // シーン再構築を非同期で開始する関数
     func startSceneReconstruction() async -> SceneReconstructionProvider? {
         let sceneReconstruction = SceneReconstructionProvider()
         do {
             try await arkitSession.run([sceneReconstruction])
         } catch {
-            print("Error: \(error)")
+            print("DEBUG!: \(error)")
             return nil
         }
-        
+
         return sceneReconstruction
     }
-    
+
     var allRequiredAuthorizationsAreGranted: Bool {
         worldSensingAuthorizationStatus == .allowed
     }
@@ -114,7 +113,7 @@ class AppState {
         let authorizationResult = await arkitSession.requestAuthorization(for: [.worldSensing])
         worldSensingAuthorizationStatus = authorizationResult[.worldSensing]!
     }
-    
+
     func queryWorldSensingAuthorization() async {
         let authorizationResult = await arkitSession.queryAuthorization(for: [.worldSensing])
         worldSensingAuthorizationStatus = authorizationResult[.worldSensing]!
@@ -142,19 +141,19 @@ class AppState {
                         break
                     }
                     if let error {
-                        print("An error occurred: \(error)")
+                        print("DEBUG!: An error occurred: \(error)")
                         providersStoppedWithError = true
                     }
                 @unknown default:
                     break
                 }
             case .authorizationChanged(let type, let status):
-                print("Authorization type \(type) changed to \(status)")
+                print("DEBUG!: Authorization type \(type) changed to \(status)")
                 if type == .worldSensing {
                     worldSensingAuthorizationStatus = status
                 }
             default:
-                print("An unknown event occurred \(event)")
+                print("DEBUG!: An unknown event occurred \(event)")
             }
         }
     }

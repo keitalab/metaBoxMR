@@ -11,25 +11,73 @@ import RealityKit
 import RealityKitContent
 
 class AppClass: ObservableObject {
+    var debugMode: Bool = false
+
+    private var skinEntity: Entity?
+
+    // 初期化
+    func reset() {
+    }
+
     // シーンにエンティティを追加
     @MainActor
     func addEntity(to scene: Entity) async {
     }
-    
+
+    // スキンを追加
     @MainActor
     func addSkinEntity(anchorEntity: ObjectAnchorEntity) async {
+        skinEntity = await createSkinEntity()
+        anchorEntity.entity.addChild(skinEntity!)
+    }
+
+    // オブジェクトアンカーにエンティティを追加
+    @MainActor
+    func addEntityForObjectTracking(anchorEntity: ObjectAnchorEntity) async {
+    }
+
+    // エンティティを削除
+    @MainActor
+    func removeAllEntity(from scene: Entity) {
+        self.skinEntity?.removeFromParent()
+        self.skinEntity = nil
+    }
+
+    // 衝突開始
+    func handleCollisionBegin(entityA: Entity, entityB: Entity) {
+    }
+
+    // 衝突終了
+    func handleCollisionEnded(entityA: Entity, entityB: Entity) {
+    }
+
+    // ハンドトラッキング関係
+    func handTrackingInteraction(to scene: Entity) async {
+    }
+
+    // スキンエンティティを作成（プライベート）
+    @MainActor
+    private func createSkinEntity() async -> Entity {
         // エンティティを作成
-        if let skinEntity = try? await ModelEntity(named: "metaBoxSkin_Transparent") {
+        if let cachedModel = ModelLoader.shared.loadModels["metaBoxSkin_Transparent"] {
+            // 複製して新しいエンティティとして利用
+            let skinEntity = cachedModel.clone(recursive: true)
+
             // 判定用に名前をつける
             skinEntity.name = "metaBoxSkin"
-            
+
             // メッシュを取得
             let modelMesh = skinEntity.model!.mesh
-            
+
             // Materialを作成
             var material = UnlitMaterial(color: .red)
-            material.blending = .transparent(opacity: PhysicallyBasedMaterial.Opacity(floatLiteral: 0.0))
-            
+
+            if debugMode {
+                material.blending = .transparent(opacity: PhysicallyBasedMaterial.Opacity(floatLiteral: 0.2))
+            } else {
+                material.blending = .transparent(opacity: PhysicallyBasedMaterial.Opacity(floatLiteral: 0.0))
+            }
+
             // CollisionComponentを作成
             let skinCollision = try? await CollisionComponent(
                 shapes: [.generateConvex(from: modelMesh)],
@@ -49,49 +97,13 @@ class AppClass: ObservableObject {
             skinEntity.model?.materials = [material]
             skinEntity.components.set(skinCollision!)
             skinEntity.components.set(skinPhysicsBody!)
-            
-            // スケールを1.05倍に設定
-            let currentTransform = skinEntity.transform
-            skinEntity.transform = Transform(
-                scale: currentTransform.scale * 1.05,
-                rotation: currentTransform.rotation,
-                translation: currentTransform.translation
-            )
-            
-            // スキンエンティティをアンカーエンティティに追加
-            anchorEntity.entity.addChild(skinEntity)
+
+            return skinEntity
+        } else {
+            return Entity()
         }
-    }
-    
-    // オブジェクトアンカーにエンティティを追加
-    @MainActor
-    func addEntityForObjectTracking(anchorEntity: ObjectAnchorEntity) async {
-    }
-    
-    // エンティティを削除
-    @MainActor
-    func removeEntity(from scene: Entity) {
     }
 
-    // 衝突開始
-    func handleCollisionBegin(entityA: Entity, entityB: Entity) {
-    }
-    
-    // 衝突終了
-    func handleCollisionEnded(entityA: Entity, entityB: Entity) {
-    }
-    
-    // ハンドトラッキング関係
-    func handTrackingInteraction(to scene: Entity) async {
-    }
-    
-    // エンティティを削除
-    func removeEntityFromScene(named entityName: String, from scene: Entity) {
-        if let entity = scene.findEntity(named: entityName) {
-            entity.removeFromParent()
-        }
-    }
-    
     // SwiftUIのViewを返す
     struct AppView: View {
         var body: some View {

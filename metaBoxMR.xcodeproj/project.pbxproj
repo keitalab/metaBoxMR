@@ -12,12 +12,11 @@
 		0F04F7DB2C3A4C1000A2F072 /* ReferenceObjectLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F04F7DA2C3A4C1000A2F072 /* ReferenceObjectLoader.swift */; };
 		0F912B622C3A30A900D44DEF /* RealityKitContent in Frameworks */ = {isa = PBXBuildFile; productRef = 0F912B612C3A30A900D44DEF /* RealityKitContent */; };
 		0F912B642C3A30A900D44DEF /* metaBoxMR.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F912B632C3A30A900D44DEF /* metaBoxMR.swift */; };
-		0F912B662C3A30A900D44DEF /* HomeContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F912B652C3A30A900D44DEF /* HomeContentView.swift */; };
 		0F912B6E2C3A30AB00D44DEF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0F912B6D2C3A30AB00D44DEF /* Assets.xcassets */; };
 		0F912B712C3A30AB00D44DEF /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0F912B702C3A30AB00D44DEF /* Preview Assets.xcassets */; };
 		0F912B7C2C3A30AB00D44DEF /* VisionOSObjectTrackingDemoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F912B7B2C3A30AB00D44DEF /* VisionOSObjectTrackingDemoTests.swift */; };
+		D10255052D71EA36008B6A47 /* ModelLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = D10255042D71EA2F008B6A47 /* ModelLoader.swift */; };
 		D155A43B2CC26B8900F760AB /* ObjectAnchorEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = D155A43A2CC26B8900F760AB /* ObjectAnchorEntity.swift */; };
-		D1628D142CF6E9A500BA9227 /* metaBox.referenceobject in Sources */ = {isa = PBXBuildFile; fileRef = D1628D132CF6E9A500BA9227 /* metaBox.referenceobject */; };
 		D178A9732CCF2156007AD290 /* Unlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = D178A9722CCF2156007AD290 /* Unlock.swift */; };
 		D178A9752CCF55DF007AD290 /* AppSelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = D178A9742CCF55D6007AD290 /* AppSelection.swift */; };
 		D1F09EF72D0AC6BF0091F5C1 /* MathClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1F09EF62D0AC6AE0091F5C1 /* MathClass.swift */; };
@@ -40,20 +39,21 @@
 		0F912B5C2C3A30A900D44DEF /* metaBoxMR.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = metaBoxMR.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0F912B602C3A30A900D44DEF /* RealityKitContent */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = RealityKitContent; sourceTree = "<group>"; };
 		0F912B632C3A30A900D44DEF /* metaBoxMR.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = metaBoxMR.swift; sourceTree = "<group>"; };
-		0F912B652C3A30A900D44DEF /* HomeContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeContentView.swift; sourceTree = "<group>"; };
 		0F912B6D2C3A30AB00D44DEF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		0F912B702C3A30AB00D44DEF /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		0F912B722C3A30AB00D44DEF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0F912B772C3A30AB00D44DEF /* metaBoxMRTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = metaBoxMRTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		0F912B7B2C3A30AB00D44DEF /* VisionOSObjectTrackingDemoTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisionOSObjectTrackingDemoTests.swift; sourceTree = "<group>"; };
+		D10255042D71EA2F008B6A47 /* ModelLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelLoader.swift; sourceTree = "<group>"; };
 		D155A43A2CC26B8900F760AB /* ObjectAnchorEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectAnchorEntity.swift; sourceTree = "<group>"; };
-		D1628D132CF6E9A500BA9227 /* metaBox.referenceobject */ = {isa = PBXFileReference; lastKnownFileType = file.referenceobject; path = metaBox.referenceobject; sourceTree = "<group>"; };
 		D178A9722CCF2156007AD290 /* Unlock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Unlock.swift; sourceTree = "<group>"; };
 		D178A9742CCF55D6007AD290 /* AppSelection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSelection.swift; sourceTree = "<group>"; };
 		D1F09EF62D0AC6AE0091F5C1 /* MathClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MathClass.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		D10254FD2D6EF801008B6A47 /* Reference Objects */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = "Reference Objects"; sourceTree = "<group>"; };
+		D102550A2D733F3F008B6A47 /* Movies */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Movies; sourceTree = "<group>"; };
 		D155B9992D0DAAF1008CFB80 /* Models */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Models; sourceTree = "<group>"; };
 		D16ED3A22CCB795000B03879 /* Apps */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Apps; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -80,6 +80,7 @@
 		0F04F7D22C3A472200A2F072 /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
+				D10255042D71EA2F008B6A47 /* ModelLoader.swift */,
 				0F04F7DA2C3A4C1000A2F072 /* ReferenceObjectLoader.swift */,
 				D1F09EF62D0AC6AE0091F5C1 /* MathClass.swift */,
 				D155A43A2CC26B8900F760AB /* ObjectAnchorEntity.swift */,
@@ -93,28 +94,19 @@
 		0F04F7D52C3A479B00A2F072 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				0F912B652C3A30A900D44DEF /* HomeContentView.swift */,
 				0F04F7D62C3A47A900A2F072 /* ObjectTrackingRealityView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
 		};
-		0F2B5E442C3A552A00BB982D /* Reference Objects */ = {
-			isa = PBXGroup;
-			children = (
-				D1628D132CF6E9A500BA9227 /* metaBox.referenceobject */,
-			);
-			path = "Reference Objects";
-			sourceTree = "<group>";
-		};
 		0F912B532C3A30A900D44DEF = {
 			isa = PBXGroup;
 			children = (
-				0F2B5E442C3A552A00BB982D /* Reference Objects */,
 				0F912B5E2C3A30A900D44DEF /* metaBoxMR */,
 				0F912B5F2C3A30A900D44DEF /* Packages */,
 				0F912B7A2C3A30AB00D44DEF /* VisionOSObjectTrackingDemoTests */,
 				0F912B5D2C3A30A900D44DEF /* Products */,
+				D10254FD2D6EF801008B6A47 /* Reference Objects */,
 			);
 			sourceTree = "<group>";
 		};
@@ -132,6 +124,7 @@
 			children = (
 				0F912B632C3A30A900D44DEF /* metaBoxMR.swift */,
 				D155B9992D0DAAF1008CFB80 /* Models */,
+				D102550A2D733F3F008B6A47 /* Movies */,
 				D16ED3A22CCB795000B03879 /* Apps */,
 				0F04F7D52C3A479B00A2F072 /* Views */,
 				0F04F7D22C3A472200A2F072 /* Helpers */,
@@ -182,6 +175,8 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
+				D10254FD2D6EF801008B6A47 /* Reference Objects */,
+				D102550A2D733F3F008B6A47 /* Movies */,
 				D155B9992D0DAAF1008CFB80 /* Models */,
 				D16ED3A22CCB795000B03879 /* Apps */,
 			);
@@ -273,14 +268,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0F912B662C3A30A900D44DEF /* HomeContentView.swift in Sources */,
-				D1628D142CF6E9A500BA9227 /* metaBox.referenceobject in Sources */,
 				0F04F7D92C3A47FC00A2F072 /* AppState.swift in Sources */,
 				D178A9752CCF55DF007AD290 /* AppSelection.swift in Sources */,
 				D1F09EF72D0AC6BF0091F5C1 /* MathClass.swift in Sources */,
 				D178A9732CCF2156007AD290 /* Unlock.swift in Sources */,
 				0F04F7D72C3A47A900A2F072 /* ObjectTrackingRealityView.swift in Sources */,
 				0F912B642C3A30A900D44DEF /* metaBoxMR.swift in Sources */,
+				D10255052D71EA36008B6A47 /* ModelLoader.swift in Sources */,
 				D155A43B2CC26B8900F760AB /* ObjectAnchorEntity.swift in Sources */,
 				0F04F7DB2C3A4C1000A2F072 /* ReferenceObjectLoader.swift in Sources */,
 			);
@@ -432,16 +426,17 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"metaBoxMR/Preview Content\"";
-				DEVELOPMENT_TEAM = XPB2B85UAV;
+				DEVELOPMENT_TEAM = 7G4GL3CHB9;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "$(TARGET_NAME)/Info.plist";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "音声録音のためにマイクを使用します。";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.yuto.metaBoxMR;
+				PRODUCT_BUNDLE_IDENTIFIER = com.100kw.metaBoxMR;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "xros xrsimulator";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -458,16 +453,17 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"metaBoxMR/Preview Content\"";
-				DEVELOPMENT_TEAM = XPB2B85UAV;
+				DEVELOPMENT_TEAM = 7G4GL3CHB9;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "$(TARGET_NAME)/Info.plist";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "音声録音のためにマイクを使用します。";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.yuto.metaBoxMR;
+				PRODUCT_BUNDLE_IDENTIFIER = com.100kw.metaBoxMR;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "xros xrsimulator";
 				SWIFT_EMIT_LOC_STRINGS = YES;

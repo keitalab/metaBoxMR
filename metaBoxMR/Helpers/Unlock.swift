@@ -12,12 +12,12 @@ func unlock() {
 //    let urlString: String = "http://192.168.100.38/open"
 //    let urlString: String = "http://133.26.51.73/open"
     let urlString: String = "http://192.168.10.4/open"
-    
+
     guard let url = URL(string: urlString) else { return }
-    
+
     var request = URLRequest(url: url)
     request.httpMethod = "POST"
-    
+
     let task = URLSession.shared.dataTask(with: request) { data, response, error in
         guard let data else { return }
         do {
@@ -27,8 +27,8 @@ func unlock() {
             print(error)
         }
     }
-    
+
     task.resume()
-    
-    print("Unlock")
+
+    print("DEBUG!: Unlock successfully" )
 }

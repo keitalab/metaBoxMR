@@ -16,16 +16,6 @@ struct FunctionModel: Identifiable {
 
 let metaBoxApps: [FunctionModel] = [
     FunctionModel(
-        name: "合言葉Box",
-        appView: AnyView(SesameBoxView()),
-        appClass: SesameBox.shared
-    ),
-    FunctionModel(
-        name: "宝箱Box",
-        appView: AnyView(TreasureBoxView()),
-        appClass: TreasureBox.shared
-    ),
-    FunctionModel(
         name: "タイマーBox",
         appView: AnyView(TimerBoxView()),
         appClass: TimerBox.shared
@@ -34,5 +24,15 @@ let metaBoxApps: [FunctionModel] = [
         name: "フリマBox",
         appView: AnyView(FleaMarketBoxView()),
         appClass: FleaMarketBox.shared
+    ),
+    FunctionModel(
+        name: "合言葉Box",
+        appView: AnyView(SesameBoxView()),
+        appClass: SesameBox.shared
+    ),
+    FunctionModel(
+        name: "宝箱Box",
+        appView: AnyView(TreasureBoxView()),
+        appClass: TreasureBox.shared
     ),
 ]

@@ -7,8 +7,9 @@
 
 import SwiftUI
 
-final class FleaMarketBox: AppClass {
-    static let shared = FleaMarketBox()
+// 状態遷移
+enum FleaMarketBoxViewState {
+    case sale, shop
 }
 
 // 商品情報の型定義
@@ -18,37 +19,37 @@ struct Product {
     var price: Int
 }
 
-// 商品情報
-class ProductViewModel: ObservableObject {
-    @Published var product: Product?
+final class FleaMarketBox: AppClass {
+    static let shared = FleaMarketBox()
     
+    @Published var product: Product?
+        = Product(name: "テスト商品", description: "", price: 980)
+    
+    // ----- ローカル関数 ----- //
+    
+    // 商品情報を初期化
     func initProduct() {
         product = nil
     }
     
+    // 商品情報を登録
     func setProduct(product: Product) {
         self.product = product
     }
 }
 
 struct FleaMarketBoxView: View {
-    // 状態遷移
-    enum ViewState {
-        case sale, shop
-    }
-    
-    @StateObject private var productViewModel = ProductViewModel()
-    
-    @State private var currentState: ViewState = .shop
+    @StateObject private var appClass = FleaMarketBox.shared
+    @State private var currentState: FleaMarketBoxViewState = .shop
     
     var body: some View {
         VStack {
             VStack {
                 Picker("", selection: self.$currentState) {
                     Text("購入")
-                        .tag(ViewState.shop)
+                        .tag(FleaMarketBoxViewState.shop)
                     Text("出品")
-                        .tag(ViewState.sale)
+                        .tag(FleaMarketBoxViewState.sale)
                 }
                 .pickerStyle(.segmented)
                 .frame(width: 150)
@@ -58,10 +59,10 @@ struct FleaMarketBoxView: View {
             VStack {
                 switch currentState {
                 case .sale:
-                    SaleView(productViewModel: productViewModel)
+                    SaleView(appClass: appClass)
                         .transition(.blurReplace)
                 case .shop:
-                    ShopView(productViewModel: productViewModel)
+                    ShopView(appClass: appClass)
                         .transition(.blurReplace)
                 }
             }
@@ -85,14 +86,14 @@ struct SaleView: View {
         case attention, success, info
     }
     
-    @ObservedObject var productViewModel: ProductViewModel
+    @ObservedObject var appClass: FleaMarketBox
     @State private var currentState: ViewState = .info
     @State private var isShowAlert: Bool = false
     @State private var formInfo: Product = Product(name: "", description: "", price: 0)
     
     // 商品情報を登録
     func setInfo() {
-        productViewModel.product = formInfo
+        appClass.product = formInfo
     }
     
     // body
@@ -106,7 +107,7 @@ struct SaleView: View {
                 successView
                     .transition(.blurReplace)
             case .info:
-                if(productViewModel.product == nil) {
+                if(appClass.product == nil) {
                     infoView
                         .transition(.blurReplace)
                 } else {
@@ -197,7 +198,7 @@ struct SaleView: View {
                     currentState = .success
 
                     // 商品情報を登録
-                    productViewModel.setProduct(product: formInfo)
+                    appClass.setProduct(product: formInfo)
                 }
             }
         }
@@ -238,7 +239,7 @@ struct ShopView: View {
         case main, complete
     }
     
-    @ObservedObject var productViewModel: ProductViewModel
+    @ObservedObject var appClass: FleaMarketBox
     @State private var currentState: ViewState = .main
     
     var body: some View {
@@ -248,7 +249,7 @@ struct ShopView: View {
                 completeView
                     .transition(.blurReplace)
             case .main:
-                if(productViewModel.product == nil) {
+                if(appClass.product == nil) {
                     cannotShopView
                         .transition(.blurReplace)
                 } else {
@@ -264,7 +265,7 @@ struct ShopView: View {
     // 販売中の商品情報
     var mainView: some View {
         VStack {
-            if let product = productViewModel.product {
+            if let product = appClass.product {
                 Text("フリマBox")
                     .padding()
                     .font(.title)
@@ -328,7 +329,7 @@ struct ShopView: View {
     // 購入完了画面
     var completeView: some View {
         VStack(spacing: 10) {
-            if let product = productViewModel.product {
+            if let product = appClass.product {
                 HStack {
                     Image(systemName: "checkmark.circle")
                         .font(.system(size: 20))
@@ -343,7 +344,7 @@ struct ShopView: View {
                 }
                 
                 Button("購入画面に戻る") {
-                    productViewModel.initProduct()
+                    appClass.initProduct()
                     currentState = .main
                 }
                 .padding()

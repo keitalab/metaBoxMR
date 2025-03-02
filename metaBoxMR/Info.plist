@@ -2,16 +2,18 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>マイクを使用します。</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>音声認識を使用します。</string>
 	<key>NSHandsTrackingUsageDescription</key>
 	<string>ハンドトラッキングを使用します。</string>
 	<key>NSWorldSensingUsageDescription</key>
 	<string>オブジェクトトラッキングを使用します。</string>
-	<key>NSMicrophoneUsageDescription</key>
-	<string>音声録音のためにマイクを使用します。</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationPreferredDefaultSceneSessionRole</key>
-		<string>UIWindowSceneSessionRoleApplication</string>
+		<string>UISceneSessionRoleImmersiveSpaceApplication</string>
 		<key>UIApplicationSupportsMultipleScenes</key>
 		<true/>
 		<key>UISceneConfigurations</key>
@@ -20,7 +22,7 @@
 			<array>
 				<dict>
 					<key>UISceneInitialImmersionStyle</key>
-					<string>UIImmersionStyleFull</string>
+					<string>UIImmersionStyleMixed</string>
 				</dict>
 			</array>
 		</dict>
